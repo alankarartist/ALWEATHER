@@ -16,7 +16,7 @@ class AlWeather:
         root.config(bg="white")
         mainframe = Frame(root,bg="white")
         
-        configFile = 'config.ini'
+        configFile = './AlWeather/config.ini'
         config = ConfigParser()
         config.read(configFile)
         apiKey = config['API_KEY']['key']
