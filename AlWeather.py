@@ -66,7 +66,7 @@ class AlWeather:
             weather = getWeather(city)
             if weather:
                 locationLabel['text'] = '{}, {}'.format(weather[0], weather[1])
-                path = os.getcwd()+'\icons\{}.png'.format(weather[4])
+                path = os.getcwd()+'\AlWeather\icons\{}.png'.format(weather[4])
                 img = ImageTk.PhotoImage(Image.open(path))
                 imageLabel['image'] = img
                 imageLabel.photo = img
@@ -86,7 +86,7 @@ class AlWeather:
 
         location = geocoder.ip('me')
         defaultloc =  getWeather(location.city)
-        path = os.getcwd()+'\icons\{}.png'.format(defaultloc[4])
+        path = os.getcwd()+'\AlWeather\icons\{}.png'.format(defaultloc[4])
         img = ImageTk.PhotoImage(Image.open(path))
 
         cityVar = StringVar()
@@ -109,7 +109,7 @@ class AlWeather:
 
         frame = Frame(mainframe)
 
-        sunrpng = Image.open(os.getcwd()+'\icons\sunrise.png')
+        sunrpng = Image.open(os.getcwd()+'\AlWeather\icons\sunrise.png')
         sunrpng = sunrpng.resize((100,100), Image.ANTIALIAS)
         sunrpng = ImageTk.PhotoImage(sunrpng)
         sunrico = Label(frame, image=sunrpng)
@@ -125,7 +125,7 @@ class AlWeather:
         sunriseLabel.config(bg='white', font=textHighlightFont)
         sunriseLabel.grid(row=1,column=1,sticky="nsew")
 
-        sunspng = Image.open(os.getcwd()+'\icons\sunset.png')
+        sunspng = Image.open(os.getcwd()+'\AlWeather\icons\sunset.png')
         sunspng = sunspng.resize((100,100), Image.ANTIALIAS)
         sunspng = ImageTk.PhotoImage(sunspng)
         sunsico = Label(frame, image=sunspng)
