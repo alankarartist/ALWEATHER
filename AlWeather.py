@@ -217,7 +217,7 @@ class AlWeather:
         
             root.mainloop()
         except:
-            speak('Due to network issue unable to give weather updates of current location')
+            speak('Sorry for the inconvinience. Due to network issue unable to give weather updates of current location.')
 
 if __name__ == '__main__':
     AlWeather()
