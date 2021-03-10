@@ -9,14 +9,16 @@ import requests
 import geocoder
 from datetime import datetime
 
+cwd = os.path.dirname(os.path.realpath(__file__))
+
 class AlWeather:
     def __init__(self):
-        root = Tk(className=" AlWeather ")
+        root = Tk(className=" ALWEATHER ")
         root.geometry("500x450+1410+565")
         root.config(bg="white")
         mainframe = Frame(root,bg="white")
         
-        configFile = './AlWeather/config.ini'
+        configFile = cwd+'\AlWeather\config.ini'
         config = ConfigParser()
         config.read(configFile)
         apiKey = config['API_KEY']['key']
@@ -56,7 +58,7 @@ class AlWeather:
                 suns = suns + zone
                 suns = int(suns)
                 suns = datetime.utcfromtimestamp(suns).strftime('%H:%M')
-                final = (city, country, tempC, tempF, icon, weather, description, hum, win, press, feelTemp, sunr, suns)
+                final = (city.upper(), country, tempC, tempF, icon, weather.upper(), description, hum, win, press, feelTemp, sunr, suns)
                 return final
             else:
                 return None
@@ -66,7 +68,7 @@ class AlWeather:
             weather = getWeather(city)
             if weather:
                 locationLabel['text'] = '{}, {}'.format(weather[0], weather[1])
-                path = os.getcwd()+'\AlWeather\icons\{}.png'.format(weather[4])
+                path = cwd+'\AlWeather\icons\{}.png'.format(weather[4])
                 img = ImageTk.PhotoImage(Image.open(path))
                 imageLabel['image'] = img
                 imageLabel.photo = img
@@ -79,16 +81,16 @@ class AlWeather:
                 sunsetLabel['text'] = '{}'.format(weather[12])
                 speak('Current temprature of {} is {:.2f} degree in celcius and {:.2f} degree in Fahrenheit and feels like {:.2f} degree celcius. Humidity is {} percent. Weather is {}. Wind speed is {:.2f} Kilometer per hour. Pressure is {} hPa.'.format(weather[0], weather[2], weather[3], weather[10], weather[7], weather[6], weather[8], weather[9]))
             else:
-                messagebox.showerror('Error', 'Cannot find city {}'.format(city))
+                messagebox.showerror('ALWEATHER ERROR', 'Cannot find city {}'.format(city))
         
-        textHighlightFont = font.Font(family='LEMON MILK BOLD', size=10)
-        appHighlightFont = font.Font(family='LEMON MILK BOLD', size=12)
+        textHighlightFont = font.Font(family='Segoe UI', size=12, weight='bold')
+        appHighlightFont = font.Font(family='Segoe UI', size=12, weight='bold')
 
         try:
             ipAddress = requests.get('http://api.ipify.org/').text
             location = geocoder.ip(ipAddress)
             defaultloc =  getWeather(location.city)
-            path = os.getcwd()+'\AlWeather\icons\{}.png'.format(defaultloc[4])
+            path = cwd+'\AlWeather\icons\{}.png'.format(defaultloc[4])
             img = ImageTk.PhotoImage(Image.open(path))
 
             cityVar = StringVar()
@@ -96,13 +98,13 @@ class AlWeather:
             cityEntry.config(bg='white', font=appHighlightFont, highlightbackground='black', highlightcolor='black', highlightthickness=3, borderwidth=0, bd=0)
             cityEntry.pack(fill=X)
 
-            weatherBtn = Button(mainframe, borderwidth=0, text='Search', command=search)
+            weatherBtn = Button(mainframe, borderwidth=0, text='SEARCH', command=search)
             weatherBtn.config(bg='black', fg='white', font=appHighlightFont, height=2)
             weatherBtn.pack(fill=X)
 
             locationFrame = Frame(mainframe)
 
-            locationLabel = Label(locationFrame, text='{}, {}'.format(defaultloc[0], defaultloc[1]))
+            locationLabel = Label(locationFrame, text='{}, {}'.format(defaultloc[0].upper(), defaultloc[1].upper()))
             locationLabel.config(bg='white', font=appHighlightFont, height=2, highlightbackground='black', highlightcolor='black', highlightthickness=3, borderwidth=0)
             locationLabel.pack(fill=X)
 
@@ -111,7 +113,7 @@ class AlWeather:
 
             frame = Frame(mainframe)
 
-            sunrpng = Image.open(os.getcwd()+'\AlWeather\icons\sunrise.png')
+            sunrpng = Image.open(cwd+'\AlWeather\icons\sunrise.png')
             sunrpng = sunrpng.resize((100,100), Image.ANTIALIAS)
             sunrpng = ImageTk.PhotoImage(sunrpng)
             sunrico = Label(frame, image=sunrpng)
@@ -119,7 +121,7 @@ class AlWeather:
             sunrico.config(bg='white')
             sunrico.grid(row=0,column=0,rowspan=2,sticky="nsew")
 
-            sunrise = Label(frame, text='Sunrise')
+            sunrise = Label(frame, text='SUNRISE')
             sunrise.config(bg='white', font=textHighlightFont)
             sunrise.grid(row=0,column=1,sticky="nsew")
 
@@ -127,7 +129,7 @@ class AlWeather:
             sunriseLabel.config(bg='white', font=textHighlightFont)
             sunriseLabel.grid(row=1,column=1,sticky="nsew")
 
-            sunspng = Image.open(os.getcwd()+'\AlWeather\icons\sunset.png')
+            sunspng = Image.open(cwd+'\AlWeather\icons\sunset.png')
             sunspng = sunspng.resize((100,100), Image.ANTIALIAS)
             sunspng = ImageTk.PhotoImage(sunspng)
             sunsico = Label(frame, image=sunspng)
@@ -135,7 +137,7 @@ class AlWeather:
             sunsico.config(bg='white')
             sunsico.grid(row=0,column=2,rowspan=2,sticky="nsew")
 
-            sunset = Label(frame, text='Sunset')
+            sunset = Label(frame, text='SUNSET')
             sunset.config(bg='white', font=textHighlightFont)
             sunset.grid(row=0,column=3,sticky="nsew")
 
@@ -162,23 +164,23 @@ class AlWeather:
 
             horizontalFrame = Frame(mainframe)
 
-            humidity = Label(horizontalFrame, text='Humidity')
+            humidity = Label(horizontalFrame, text='HUMIDITY')
             humidity.config(bg='white', font=textHighlightFont)
             humidity.grid(row=0,column=0,padx=5,pady=5,sticky="nsew")
 
-            temp = Label(horizontalFrame, text='Temperature')
+            temp = Label(horizontalFrame, text='TEMPERATURE')
             temp.config(bg='white', font=textHighlightFont)
             temp.grid(row=0,column=1,padx=5,pady=5,sticky="nsew")
 
-            weatherType = Label(horizontalFrame, text='Weather')
+            weatherType = Label(horizontalFrame, text='WEATHER')
             weatherType.config(bg='white', font=textHighlightFont)
             weatherType.grid(row=0,column=2,padx=5,pady=5,sticky="nsew")
 
-            wind = Label(horizontalFrame, text='Wind')
+            wind = Label(horizontalFrame, text='WIND')
             wind.config(bg='white', font=textHighlightFont)
             wind.grid(row=0,column=3,padx=5,pady=5,sticky="nsew")
 
-            pressure = Label(horizontalFrame, text='Pressure')
+            pressure = Label(horizontalFrame, text='PRESSURE')
             pressure.config(bg='white', font=textHighlightFont)
             pressure.grid(row=0,column=4,padx=5,pady=5,sticky="nsew")
 
@@ -190,7 +192,7 @@ class AlWeather:
             tempLabel.config(bg='white', font=textHighlightFont)
             tempLabel.grid(row=1,column=1,padx=5,pady=5,sticky="nsew")
 
-            weatherLabel = Label(horizontalFrame, text=defaultloc[5])
+            weatherLabel = Label(horizontalFrame, text=defaultloc[5].upper())
             weatherLabel.config(bg='white', font=textHighlightFont)
             weatherLabel.grid(row=1,column=2,padx=5,pady=5,sticky="nsew")
 
@@ -207,7 +209,7 @@ class AlWeather:
             horizontalFrame.grid_columnconfigure(2,weight=1)
             horizontalFrame.grid_columnconfigure(3,weight=1)
             horizontalFrame.grid_columnconfigure(4,weight=1)
-            horizontalFrame.config(bg='white', highlightbackground='black', highlightcolor='black', highlightthickness=3, borderwidth=0, bd=0)
+            horizontalFrame.config(bg='white', highlightbackground='black', highlightcolor='black', highlightthickness=3, borderwidth=0, bd=5)
             horizontalFrame.pack(fill=X)
 
             mainframe.config(bg='white', highlightbackground='black', highlightcolor='black', highlightthickness=3, borderwidth=0, bd=0)
