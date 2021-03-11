@@ -16,6 +16,7 @@ class AlWeather:
         root = Tk(className=" ALWEATHER ")
         root.geometry("500x450+1410+565")
         root.config(bg="white")
+        root.iconbitmap(os.path.join(cwd+'\\UI\\icons', 'alweather.ico'))
         mainframe = Frame(root,bg="white")
         
         configFile = cwd+'\AlWeather\config.ini'
