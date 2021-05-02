@@ -15,6 +15,7 @@ class AlWeather:
     def __init__(self):
         root = Tk(className=" ALWEATHER ")
         root.geometry("500x450+1410+565")
+        root.resizable(0,0)
         root.config(bg="white")
         root.iconbitmap(os.path.join(cwd+'\\UI\\icons', 'alweather.ico'))
         mainframe = Frame(root,bg="white")
