@@ -22,3 +22,9 @@ pip install Pillow
 
 1. Enter the city name in the white space.
 2. Click on SEARCH button to the weather information of that city.
+
+## Contributor
+
+<a href="https://github.com/alankarartist/ALWEATHER/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=alankarartist/ALWEATHER" />
+</a>
