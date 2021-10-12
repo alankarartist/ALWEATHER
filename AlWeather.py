@@ -4,7 +4,6 @@ from tkinter import messagebox
 from configparser import ConfigParser
 from PIL import ImageTk, Image
 import os
-import pyttsx3
 import requests
 import geocoder
 from datetime import datetime
@@ -14,24 +13,32 @@ cwd = os.path.dirname(os.path.realpath(__file__))
 class AlWeather:
     def __init__(self):
         root = Tk(className=" ALWEATHER ")
-        root.geometry("500x450+1410+565")
+        root.geometry("500x483+1410+550")
         root.resizable(0,0)
         root.config(bg="white")
         root.iconbitmap(os.path.join(cwd+'\\UI\\icons', 'alweather.ico'))
+        root.overrideredirect(1)
         mainframe = Frame(root,bg="white")
+
+        def callback(event):
+            root.geometry("400x175+1500+840")
+
+        def showScreen(event):
+            root.deiconify()
+            root.overrideredirect(1)
+
+        def screenAppear(event):
+            root.overrideredirect(1)
+
+        def hideScreen():
+            root.overrideredirect(0)
+            root.iconify()
         
         configFile = cwd+'\AlWeather\config.ini'
         config = ConfigParser()
         config.read(configFile)
         apiKey = config['API_KEY']['key']
         url = 'http://api.openweathermap.org/data/2.5/weather?q={}&appid={}'
-
-        def speak(audio):
-            engine = pyttsx3.init('sapi5')
-            voices = engine.getProperty('voices')
-            engine.setProperty('voice', voices[0].id)
-            engine.say(audio)
-            engine.runAndWait()
 
         def getWeather(city):
             result = requests.get(url.format(city, apiKey))
@@ -81,12 +88,37 @@ class AlWeather:
                 pressureLabel['text'] = '{} hPa'.format(weather[9])
                 sunriseLabel['text'] = '{}'.format(weather[11])
                 sunsetLabel['text'] = '{}'.format(weather[12])
-                speak('Current temprature of {} is {:.2f} degree in celcius and {:.2f} degree in Fahrenheit and feels like {:.2f} degree celcius. Humidity is {} percent. Weather is {}. Wind speed is {:.2f} Kilometer per hour. Pressure is {} hPa.'.format(weather[0], weather[2], weather[3], weather[10], weather[7], weather[6], weather[8], weather[9]))
             else:
                 messagebox.showerror('ALWEATHER ERROR', 'Cannot find city {}'.format(city))
         
-        textHighlightFont = font.Font(family='Segoe UI', size=12, weight='bold')
-        appHighlightFont = font.Font(family='Segoe UI', size=12, weight='bold')
+        textHighlightFont = font.Font(family='OnePlus Sans Display', size=10, weight='bold')
+        appHighlightFont = font.Font(family='OnePlus Sans Display', size=12, weight='bold')
+
+        titleBar = Frame(root, bg='#141414', relief=SUNKEN, bd=0)
+        icon = Image.open(os.path.join(cwd + '\\UI\\icons',
+                          'alweather.ico'))
+        icon = icon.resize((30, 30), Image.ANTIALIAS)
+        icon = ImageTk.PhotoImage(icon)
+        iconLabel = Label(titleBar, image=icon)
+        iconLabel.photo = icon
+        iconLabel.config(bg='#141414')
+        iconLabel.grid(row=0, column=0, sticky="nsew")
+        titleLabel = Label(titleBar, text='ALWEATHER', fg='#909090',
+                           bg='#141414', font=appHighlightFont)
+        titleLabel.grid(row=0, column=1, sticky="nsew")
+        closeButton = Button(titleBar, text="x", bg='#141414', fg="#909090",
+                             borderwidth=0, command=root.destroy,
+                             font=appHighlightFont)
+        closeButton.grid(row=0, column=3, sticky="nsew")
+        minimizeButton = Button(titleBar, text="-", bg='#141414', fg="#909090",
+                                borderwidth=0, command=hideScreen,
+                                font=appHighlightFont)
+        minimizeButton.grid(row=0, column=2, sticky="nsew")
+        titleBar.grid_columnconfigure(0, weight=1)
+        titleBar.grid_columnconfigure(1, weight=30)
+        titleBar.grid_columnconfigure(2, weight=1)
+        titleBar.grid_columnconfigure(3, weight=1)
+        titleBar.pack(fill=X)
 
         try:
             ipAddress = requests.get('http://api.ipify.org/').text
@@ -217,11 +249,31 @@ class AlWeather:
             mainframe.config(bg='white', highlightbackground='black', highlightcolor='black', highlightthickness=3, borderwidth=0, bd=0)
             mainframe.pack(fill=BOTH,expand=True)
 
-            speak('Current temprature of {} is {:.2f} degree in celcius and {:.2f} degree in Fahrenheit and feels like {:.2f} degree celcius. Humidity is {} percent. Weather is {}. Wind speed is {:.2f} Kilometer per hour. Pressure is {} hPa.'.format(defaultloc[0], defaultloc[2], defaultloc[3], defaultloc[10], defaultloc[7], defaultloc[6], defaultloc[8], defaultloc[9]))
-        
-            root.mainloop()
         except:
-            speak('Sorry for the inconvinience. Due to network issue unable to give weather updates of current location.')
+            error = 'Sorry for the inconvinience. Due to network issue unable to give weather updates of current location.'
+            errorFrame = Frame(mainframe)
+            
+            errorpng = Image.open(cwd+'\AlWeather\icons\inconvinience.png')
+            errorpng = errorpng.resize((500,450), Image.ANTIALIAS)
+            errorpng = ImageTk.PhotoImage(errorpng)
+            errorico = Label(errorFrame, image=errorpng)
+            errorico.photo = errorpng
+            errorico.config(bg='white')
+            errorico.pack(fill=BOTH, expand=True)
+
+            errorFrame.config(bg='white',highlightbackground='black', highlightcolor='black', highlightthickness=3, borderwidth=0, bd=0)
+            errorFrame.pack(fill=X)
+
+            mainframe.config(bg='white', highlightbackground='black', highlightcolor='black', highlightthickness=3, borderwidth=0, bd=0)
+            mainframe.pack(fill=BOTH,expand=True)
+
+        finally:
+            titleBar.bind("<B1-Motion>", callback)
+            titleBar.bind("<Button-3>", showScreen)
+            titleBar.bind("<Map>", screenAppear)
+
+            root.mainloop()
+
 
 if __name__ == '__main__':
     AlWeather()
