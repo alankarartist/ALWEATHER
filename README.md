@@ -18,7 +18,7 @@ pip install Pillow
 ![](/AlWeather.JPG)
 
 1. Enter the city name in the white space.
-2. Click on SEARCH button to the weather information of that city.
+2. Click on SEARCH button to get the weather information of that city.
 
 ## Contributor
 
