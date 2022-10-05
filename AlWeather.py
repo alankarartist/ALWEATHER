@@ -2,13 +2,16 @@ from tkinter import Tk, Frame, SUNKEN, Label, Button
 from tkinter import font, StringVar, BOTH, X, Entry
 from tkinter import messagebox
 from configparser import ConfigParser
+from turtle import color
 from PIL import ImageTk, Image
 import os
 import requests
 import geocoder
 from datetime import datetime
+import platform
 
 cwd = os.path.dirname(os.path.realpath(__file__))
+systemName = platform.system()
 
 
 class AlWeather:
@@ -17,7 +20,11 @@ class AlWeather:
         root.geometry("500x483+1410+550")
         root.resizable(0, 0)
         root.config(bg="white")
-        root.iconbitmap(os.path.join(cwd+'\\UI\\icons', 'alweather.ico'))
+        iconPath = os.path.join(cwd+'\\UI\\icons',
+                                'alweather.ico')
+        if systemName == 'Darwin':
+            iconPath = iconPath.replace('\\','/')
+        root.iconbitmap(iconPath)
         root.overrideredirect(1)
         mainframe = Frame(root, bg="white")
 
@@ -40,6 +47,8 @@ class AlWeather:
             root.iconify()
 
         configFile = cwd+'\\AlWeather\\config.ini'
+        if systemName == 'Darwin':
+            configFile = configFile.replace('\\','/')
         config = ConfigParser()
         config.read(configFile)
         apiKey = config['API_KEY']['key']
@@ -91,6 +100,8 @@ class AlWeather:
             if weather:
                 locationLabel['text'] = '{}, {}'.format(weather[0], weather[1])
                 path = cwd+'\\AlWeather\\icons\\{}.png'.format(weather[4])
+                if systemName == 'Darwin':
+                    path = path.replace('\\','/')
                 img = ImageTk.PhotoImage(Image.open(path))
                 imageLabel['image'] = img
                 imageLabel.photo = img
@@ -112,8 +123,7 @@ class AlWeather:
                                      weight='bold')
 
         titleBar = Frame(root, bg='#141414', relief=SUNKEN, bd=0)
-        icon = Image.open(os.path.join(cwd + '\\UI\\icons',
-                          'alweather.ico'))
+        icon = Image.open(iconPath)
         icon = icon.resize((30, 30), Image.ANTIALIAS)
         icon = ImageTk.PhotoImage(icon)
         iconLabel = Label(titleBar, image=icon)
@@ -142,6 +152,8 @@ class AlWeather:
             location = geocoder.ip(ipAddress)
             defaultloc = getWeather(location.city)
             path = cwd+'\\AlWeather\\icons\\{}.png'.format(defaultloc[4])
+            if systemName == 'Darwin':
+                    path = path.replace('\\','/')
             img = ImageTk.PhotoImage(Image.open(path))
 
             cityVar = StringVar()
@@ -149,13 +161,17 @@ class AlWeather:
             cityEntry.config(bg='white', font=appHighlightFont,
                              highlightbackground='black',
                              highlightcolor='black', highlightthickness=3,
-                             borderwidth=0, bd=0)
+                             borderwidth=0, bd=0, fg='black')
             cityEntry.pack(fill=X)
 
             weatherBtn = Button(mainframe, borderwidth=0, text='SEARCH',
                                 command=search)
-            weatherBtn.config(bg='black', fg='white', font=appHighlightFont,
-                              height=2)
+            if systemName == 'Darwin':
+                weatherBtn.config(bg='white', fg='black', font=appHighlightFont,
+                                height=2)
+            else:
+                weatherBtn.config(bg='black', fg='white', font=appHighlightFont,
+                                height=2)
             weatherBtn.pack(fill=X)
 
             locationFrame = Frame(mainframe)
@@ -166,7 +182,7 @@ class AlWeather:
             locationLabel.config(bg='white', font=appHighlightFont, height=2,
                                  highlightbackground='black',
                                  highlightcolor='black', highlightthickness=3,
-                                 borderwidth=0)
+                                 borderwidth=0, fg='black')
             locationLabel.pack(fill=X)
 
             locationFrame.config(bg='white', highlightbackground='black',
@@ -176,7 +192,10 @@ class AlWeather:
 
             frame = Frame(mainframe)
 
-            sunrpng = Image.open(cwd+'\\AlWeather\\icons\\sunrise.png')
+            srpath = cwd+'\\AlWeather\\icons\\sunrise.png'
+            if systemName == 'Darwin':
+                srpath = srpath.replace('\\','/')
+            sunrpng = Image.open(srpath)
             sunrpng = sunrpng.resize((100, 100), Image.ANTIALIAS)
             sunrpng = ImageTk.PhotoImage(sunrpng)
             sunrico = Label(frame, image=sunrpng)
@@ -185,14 +204,19 @@ class AlWeather:
             sunrico.grid(row=0, column=0, rowspan=2, sticky="nsew")
 
             sunrise = Label(frame, text='SUNRISE')
-            sunrise.config(bg='white', font=textHighlightFont)
+            sunrise.config(bg='white', fg='black',
+                           font=textHighlightFont)
             sunrise.grid(row=0, column=1, sticky="nsew")
 
             sunriseLabel = Label(frame, text='{}'.format(defaultloc[11]))
-            sunriseLabel.config(bg='white', font=textHighlightFont)
+            sunriseLabel.config(bg='white', fg='black',
+                                font=textHighlightFont)
             sunriseLabel.grid(row=1, column=1, sticky="nsew")
 
-            sunspng = Image.open(cwd+'\\AlWeather\\icons\\sunset.png')
+            sspath = cwd+'\\AlWeather\\icons\\sunset.png'
+            if systemName == 'Darwin':
+                sspath = sspath.replace('\\','/')
+            sunspng = Image.open(sspath)
             sunspng = sunspng.resize((100, 100), Image.ANTIALIAS)
             sunspng = ImageTk.PhotoImage(sunspng)
             sunsico = Label(frame, image=sunspng)
@@ -201,11 +225,13 @@ class AlWeather:
             sunsico.grid(row=0, column=2, rowspan=2, sticky="nsew")
 
             sunset = Label(frame, text='SUNSET')
-            sunset.config(bg='white', font=textHighlightFont)
+            sunset.config(bg='white', fg='black',
+                          font=textHighlightFont)
             sunset.grid(row=0, column=3, sticky="nsew")
 
             sunsetLabel = Label(frame, text='{}'.format(defaultloc[12]))
-            sunsetLabel.config(bg='white', font=textHighlightFont)
+            sunsetLabel.config(bg='white', fg='black',
+                               font=textHighlightFont)
             sunsetLabel.grid(row=1, column=3, sticky="nsew")
 
             frame.grid_columnconfigure(0, weight=1)
@@ -234,48 +260,58 @@ class AlWeather:
             horizontalFrame = Frame(mainframe)
 
             humidity = Label(horizontalFrame, text='HUMIDITY')
-            humidity.config(bg='white', font=textHighlightFont)
+            humidity.config(bg='white', fg='black',
+                            font=textHighlightFont)
             humidity.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
             temp = Label(horizontalFrame, text='TEMPERATURE')
-            temp.config(bg='white', font=textHighlightFont)
+            temp.config(bg='white', fg='black',
+                        font=textHighlightFont)
             temp.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
             weatherType = Label(horizontalFrame, text='WEATHER')
-            weatherType.config(bg='white', font=textHighlightFont)
+            weatherType.config(bg='white', fg='black',
+                               font=textHighlightFont)
             weatherType.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
 
             wind = Label(horizontalFrame, text='WIND')
-            wind.config(bg='white', font=textHighlightFont)
+            wind.config(bg='white', fg='black',
+                        font=textHighlightFont)
             wind.grid(row=0, column=3, padx=5, pady=5, sticky="nsew")
 
             pressure = Label(horizontalFrame, text='PRESSURE')
-            pressure.config(bg='white', font=textHighlightFont)
+            pressure.config(bg='white', fg='black',
+                            font=textHighlightFont)
             pressure.grid(row=0, column=4, padx=5, pady=5, sticky="nsew")
 
             humidityLabel = Label(horizontalFrame,
                                   text='{} %'.format(defaultloc[7]))
-            humidityLabel.config(bg='white', font=textHighlightFont)
+            humidityLabel.config(bg='white', fg='black',
+                                 font=textHighlightFont)
             humidityLabel.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 
             tempLabel = Label(horizontalFrame,
                               text=f'{round(defaultloc[2], 2)} °C, ' +
                               f'{round(defaultloc[3],2)} °F')
-            tempLabel.config(bg='white', font=textHighlightFont)
+            tempLabel.config(bg='white', fg='black',
+                             font=textHighlightFont)
             tempLabel.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
 
             weatherLabel = Label(horizontalFrame, text=defaultloc[5].upper())
-            weatherLabel.config(bg='white', font=textHighlightFont)
+            weatherLabel.config(bg='white', fg='black',
+                                font=textHighlightFont)
             weatherLabel.grid(row=1, column=2, padx=5, pady=5, sticky="nsew")
 
             windLabel = Label(horizontalFrame, text='{:.2f} Km/h'
                               ''.format(defaultloc[8]))
-            windLabel.config(bg='white', font=textHighlightFont)
+            windLabel.config(bg='white', fg='black',
+                             font=textHighlightFont)
             windLabel.grid(row=1, column=3, padx=5, pady=5, sticky="nsew")
 
             pressureLabel = Label(horizontalFrame, text='{} hPa'
                                   ''.format(defaultloc[9]))
-            pressureLabel.config(bg='white', font=textHighlightFont)
+            pressureLabel.config(bg='white', fg='black',
+                                 font=textHighlightFont)
             pressureLabel.grid(row=1, column=4, padx=5, pady=5, sticky="nsew")
 
             horizontalFrame.grid_columnconfigure(0, weight=1)
@@ -297,7 +333,10 @@ class AlWeather:
             print(e)
             errorFrame = Frame(mainframe)
 
-            errorpng = Image.open(cwd+'\\AlWeather\\icons\\inconvinience.png')
+            epath = cwd+'\\AlWeather\\icons\\inconvinience.png'
+            if systemName == 'Darwin':
+                epath = epath.replace('\\','/')
+            errorpng = Image.open(epath)
             errorpng = errorpng.resize((500, 450), Image.ANTIALIAS)
             errorpng = ImageTk.PhotoImage(errorpng)
             errorico = Label(errorFrame, image=errorpng)
@@ -320,7 +359,8 @@ class AlWeather:
             titleBar.bind("<Button-3>", showScreen)
             titleBar.bind("<Map>", screenAppear)
 
-            liftWindow()
+            if systemName == 'Windows':
+                liftWindow()
             root.mainloop()
 
 
