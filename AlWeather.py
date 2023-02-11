@@ -56,6 +56,7 @@ class AlWeather:
 
         def getWeather(city):
             try:
+                city = city.replace('ī','i')
                 result = requests.get(url.format(city, apiKey))
                 if result:
                     json = result.json()
@@ -153,7 +154,7 @@ class AlWeather:
             defaultloc = getWeather(location.city)
             path = cwd+'\\AlWeather\\icons\\{}.png'.format(defaultloc[4])
             if systemName == 'Darwin':
-                    path = path.replace('\\','/')
+                path = path.replace('\\','/')
             img = ImageTk.PhotoImage(Image.open(path))
 
             cityVar = StringVar()
