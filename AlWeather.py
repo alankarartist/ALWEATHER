@@ -8,10 +8,8 @@ import os
 import requests
 import geocoder
 from datetime import datetime
-import platform
 
 cwd = os.path.dirname(os.path.realpath(__file__))
-systemName = platform.system()
 
 
 class AlWeather:
@@ -22,8 +20,6 @@ class AlWeather:
         root.config(bg="white")
         iconPath = os.path.join(cwd+'\\UI\\icons',
                                 'alweather.ico')
-        if systemName == 'Darwin':
-            iconPath = iconPath.replace('\\','/')
         root.iconbitmap(iconPath)
         root.overrideredirect(1)
         mainframe = Frame(root, bg="white")
@@ -47,8 +43,6 @@ class AlWeather:
             root.iconify()
 
         configFile = cwd+'\\AlWeather\\config.ini'
-        if systemName == 'Darwin':
-            configFile = configFile.replace('\\','/')
         config = ConfigParser()
         config.read(configFile)
         apiKey = config['API_KEY']['key']
@@ -101,8 +95,6 @@ class AlWeather:
             if weather:
                 locationLabel['text'] = '{}, {}'.format(weather[0], weather[1])
                 path = cwd+'\\AlWeather\\icons\\{}.png'.format(weather[4])
-                if systemName == 'Darwin':
-                    path = path.replace('\\','/')
                 img = ImageTk.PhotoImage(Image.open(path))
                 imageLabel['image'] = img
                 imageLabel.photo = img
@@ -153,8 +145,6 @@ class AlWeather:
             location = geocoder.ip(ipAddress)
             defaultloc = getWeather(location.city)
             path = cwd+'\\AlWeather\\icons\\{}.png'.format(defaultloc[4])
-            if systemName == 'Darwin':
-                path = path.replace('\\','/')
             img = ImageTk.PhotoImage(Image.open(path))
 
             cityVar = StringVar()
@@ -167,12 +157,8 @@ class AlWeather:
 
             weatherBtn = Button(mainframe, borderwidth=0, text='SEARCH',
                                 command=search)
-            if systemName == 'Darwin':
-                weatherBtn.config(bg='white', fg='black', font=appHighlightFont,
-                                height=2)
-            else:
-                weatherBtn.config(bg='black', fg='white', font=appHighlightFont,
-                                height=2)
+            weatherBtn.config(bg='black', fg='white', font=appHighlightFont,
+                            height=2)
             weatherBtn.pack(fill=X)
 
             locationFrame = Frame(mainframe)
@@ -194,8 +180,6 @@ class AlWeather:
             frame = Frame(mainframe)
 
             srpath = cwd+'\\AlWeather\\icons\\sunrise.png'
-            if systemName == 'Darwin':
-                srpath = srpath.replace('\\','/')
             sunrpng = Image.open(srpath)
             sunrpng = sunrpng.resize((100, 100), Image.ANTIALIAS)
             sunrpng = ImageTk.PhotoImage(sunrpng)
@@ -215,8 +199,6 @@ class AlWeather:
             sunriseLabel.grid(row=1, column=1, sticky="nsew")
 
             sspath = cwd+'\\AlWeather\\icons\\sunset.png'
-            if systemName == 'Darwin':
-                sspath = sspath.replace('\\','/')
             sunspng = Image.open(sspath)
             sunspng = sunspng.resize((100, 100), Image.ANTIALIAS)
             sunspng = ImageTk.PhotoImage(sunspng)
@@ -335,8 +317,6 @@ class AlWeather:
             errorFrame = Frame(mainframe)
 
             epath = cwd+'\\AlWeather\\icons\\inconvinience.png'
-            if systemName == 'Darwin':
-                epath = epath.replace('\\','/')
             errorpng = Image.open(epath)
             errorpng = errorpng.resize((500, 450), Image.ANTIALIAS)
             errorpng = ImageTk.PhotoImage(errorpng)
@@ -360,8 +340,7 @@ class AlWeather:
             titleBar.bind("<Button-3>", showScreen)
             titleBar.bind("<Map>", screenAppear)
 
-            if systemName == 'Windows':
-                liftWindow()
+            liftWindow()
             root.mainloop()
 
 
